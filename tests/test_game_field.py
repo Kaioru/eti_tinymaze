@@ -15,3 +15,16 @@ def test_field_enter():
 
     assert player.field == field
     assert player.block == start_block
+
+
+def test_field_render():
+    start_block = Path(0, 0)
+    blocks = [[start_block, Path(1, 0)]]
+    field = Field(blocks, start_block)
+
+    assert field.render() == [['O', 'O']]
+
+    player = Player()
+    field.enter(player)
+
+    assert field.render() == [['A', 'O']]
