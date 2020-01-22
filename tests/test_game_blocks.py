@@ -1,4 +1,5 @@
-from src.game import Player, Path, Wall, Portal
+from src.game import Player
+from src.game.blocks import Path, Wall, Portal
 
 
 def test_block_render():
