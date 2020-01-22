@@ -11,4 +11,4 @@ stages:
 test:
   stage: test
   script:
-    - pytest
+    - pytest --cov
