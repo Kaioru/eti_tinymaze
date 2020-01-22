@@ -11,6 +11,7 @@ class Field():
         self.start_block = start_block
 
     def enter(self, player):
+        player.field = self
         self.start_block.step(player)
 
     def render(self):
