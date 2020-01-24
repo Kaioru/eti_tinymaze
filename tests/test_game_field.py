@@ -35,6 +35,7 @@ def test_field_render():
 
     assert field.render() == 'O, O\nO, O'
 
+
 def test_field_move():
     left_top = Path(0, 0)
     right_top = Path(1, 0)
