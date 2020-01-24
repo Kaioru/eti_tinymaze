@@ -32,6 +32,7 @@ class Portal(Block):
 
     def render(self):
         return 'B'
-    
+
     def step(self, player):
+        Block.step(self, player)
         player.is_finished = True

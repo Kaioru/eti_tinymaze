@@ -36,7 +36,9 @@ class Field():
         target_x = min(len(self.blocks[0]) - 1, target_x)
 
         target_block = self.blocks[target_y][target_x]
-        target_block.step(player)
+
+        if not target_block.is_wall():
+            target_block.step(player)
 
     def render(self):
         render = [', '.join([block.render() for block in row])
