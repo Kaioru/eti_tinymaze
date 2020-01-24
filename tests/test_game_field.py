@@ -87,4 +87,4 @@ def test_field_move_portal():
     field.enter(player)
     field.move(player, Direction.right)
     assert player.block == right_top
-    assert player.is_finished == True
+    assert player.is_finished
