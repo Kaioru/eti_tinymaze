@@ -22,9 +22,15 @@ def test_field_render():
     blocks = [[start_block, Path(1, 0)]]
     field = Field(blocks, start_block)
 
-    assert field.render() == [['O', 'O']]
+    assert field.render() == 'O, O'
 
     player = Player()
     field.enter(player)
 
-    assert field.render() == [['A', 'O']]
+    assert field.render() == 'A, O'
+
+    start_block = Path(0, 0)
+    blocks = [[start_block, Path(1, 0)], [Path(0, 1), Path(1, 1)]]
+    field = Field(blocks, start_block)
+
+    assert field.render() == 'O, O\nO, O'

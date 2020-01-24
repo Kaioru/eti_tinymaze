@@ -15,7 +15,9 @@ class Field():
         self.start_block.step(player)
 
     def render(self):
-        return [[block.render() for block in row] for row in self.blocks]
+        render = [', '.join([block.render() for block in row]) for row in self.blocks]
+        render = '\n'.join(render)
+        return render
 
 
 class Block():
