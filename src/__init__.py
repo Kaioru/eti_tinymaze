@@ -1,10 +1,14 @@
 import os
 import sys
+import time
+from src.menu import Menu, Option
 from src.game import Player, Field, Direction
 from src.game.blocks import Path, Wall, Portal
 
+
 class App():
     def __init__(self):
+        self.ended = False
         self.field = None
         self.player = Player()
 
@@ -17,7 +21,29 @@ class App():
         self.field = Field(blocks, left_top)
         self.field.enter(self.player)
 
+    def end(self):
+        self.ended = True
+
     def start(self):
+        menu = Menu([
+            Option("1", "Read and load maze from file", lambda: None),
+            Option("2", "View maze", lambda: None),
+            Option("3", "Play maze game", self.play_maze),
+            Option("4", "Configure current maze", lambda: None),
+            Option("0", "Exit maze", self.end),
+        ])
+
+        while not self.ended:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print("Main menu")
+            print("=========")
+            print(menu.render())
+            if not menu.select(input("Enter your option: ")):
+                print("Invalid menu option, try again!")
+                time.sleep(3)
+            print()
+
+    def play_maze(self):
         finish = False
 
         while not finish:
@@ -28,11 +54,14 @@ class App():
             start = self.field.start_block
             blocks = [block for row in self.field.blocks for block in row]
             ends = [block for block in blocks if isinstance(block, Portal)]
-            print("Location of start (A) = {0}".format(f"(row {start.y}, col {start.x})"))
-            print("Location of End (B) = {0}".format(', '.join([f"(row {block.y}, col {block.x})" for block in ends])))
+            print("Location of start (A) = {0}".format(
+                f"(row {start.y}, col {start.x})"))
+            print("Location of End (B) = {0}".format(
+                ', '.join([f"(row {block.y}, col {block.x})" for block in ends])))
 
             # todo: use menu api
-            selection = input("Use the WASD to move or M key to return to menu: ").lower()
+            selection = input(
+                "Use the WASD to move or M key to return to menu: ").lower()
 
             if selection == 'w':
                 self.field.move(self.player, Direction.up)
@@ -47,4 +76,3 @@ class App():
                     print()
                     print("You have completed the maze, congratulations!")
                 finish = True
-
