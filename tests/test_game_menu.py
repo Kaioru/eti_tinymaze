@@ -20,4 +20,6 @@ def _option_select():
 def test_menu_select():
     option = Option("1", "Select!", _option_select)
     menu = Menu([option])
-    menu.select("1")
+
+    assert menu.select("1")
+    assert menu.select("0") == False
