@@ -9,3 +9,5 @@ option5 = Option("[0]", "Exit Maze", lambda: exit())
 
 menu = Menu([option1, option2, option3, option4, option5])
 menu.render()
+userinput = input("Enter your option: ")
+menu.select(userinput)
