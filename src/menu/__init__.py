@@ -15,7 +15,6 @@ class Menu(object):
       if (option.option[1] == userinput):
         option.function()
     
-    
     input("Press Enter to continue...")
     
     self.render()
