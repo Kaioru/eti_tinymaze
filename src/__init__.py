@@ -75,4 +75,5 @@ class App():
                 if self.player.is_finished:
                     print()
                     print("You have completed the maze, congratulations!")
+                    time.sleep(3)
                 finish = True
