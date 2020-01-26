@@ -79,5 +79,6 @@ class App():
                 finish = True
 
     def view_maze(self):
-           print (self.field.render())
-           time.sleep(5)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.field.render())
+        input("Press Enter to continue...")
