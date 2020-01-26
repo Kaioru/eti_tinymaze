@@ -8,9 +8,11 @@ from src.game.blocks import Path, Wall, Portal
 
 class App():
     def __init__(self):
-        self.ended = False
         self.field = None
         self.player = Player()
+
+        self.ended = False
+        self.is_in_maze = False
 
         # Testing field for debugging purposes
         left_top = Path(0, 0)
@@ -43,10 +45,12 @@ class App():
                 time.sleep(3)
             print()
 
-    def play_maze(self):
-        finish = False
+    def end_play_maze(self):
+        self.is_in_maze = False
 
-        while not finish:
+    def play_maze(self):
+        self.is_in_maze = True
+        while self.is_in_maze:
             os.system('cls' if os.name == 'nt' else 'clear')
             print(self.field.render())
             print()
@@ -59,21 +63,23 @@ class App():
             print("Location of End (B) = {0}".format(
                 ', '.join([f"(row {block.y}, col {block.x})" for block in ends])))
 
-            # todo: use menu api
+            menu = Menu([
+                Option("w", "Move up", lambda: self.field.move(
+                    self.player, Direction.up)),
+                Option("a", "Move left", lambda: self.field.move(
+                    self.player, Direction.left)),
+                Option("s", "Move down", lambda: self.field.move(
+                    self.player, Direction.down)),
+                Option("d", "Move right", lambda: self.field.move(
+                    self.player, Direction.right)),
+                Option("m", "Return to menu", lambda: self.end_play_maze()),
+            ])
             selection = input(
-                "Use the WASD to move or M key to return to menu: ").lower()
+                "Use the WASD to move or M key to return to menu: ")
+            menu.select(selection)
 
-            if selection == 'w':
-                self.field.move(self.player, Direction.up)
-            if selection == 'a':
-                self.field.move(self.player, Direction.left)
-            if selection == 's':
-                self.field.move(self.player, Direction.down)
-            if selection == 'd':
-                self.field.move(self.player, Direction.right)
-            if selection == 'm' or self.player.is_finished:
-                if self.player.is_finished:
-                    print()
-                    print("You have completed the maze, congratulations!")
-                    time.sleep(3)
-                finish = True
+            if self.player.is_finished:
+                print()
+                print("You have completed the maze, congratulations!")
+                time.sleep(3)
+                self.end_play_maze()
