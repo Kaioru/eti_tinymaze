@@ -49,7 +49,10 @@ class App():
         self.is_in_maze = False
 
     def play_maze(self):
+        self.player = Player()
+        self.field.enter(self.player)
         self.is_in_maze = True
+
         while self.is_in_maze:
             os.system('cls' if os.name == 'nt' else 'clear')
             print(self.field.render())
