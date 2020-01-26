@@ -29,7 +29,7 @@ class App():
     def start(self):
         menu = Menu([
             Option("1", "Read and load maze from file", lambda: None),
-            Option("2", "View maze", lambda: None),
+            Option("2", "View maze", self.view_maze),
             Option("3", "Play maze game", self.play_maze),
             Option("4", "Configure current maze", lambda: None),
             Option("0", "Exit maze", self.end),
@@ -86,3 +86,8 @@ class App():
                 print("You have completed the maze, congratulations!")
                 time.sleep(3)
                 self.end_play_maze()
+
+    def view_maze(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(self.field.render())
+        input("Press Enter to continue...")
