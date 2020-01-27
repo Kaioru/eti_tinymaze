@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import csv
 from src.menu import Menu, Option
 from src.game import Player, Field, Direction
 from src.game.blocks import Path, Wall, Portal
@@ -9,26 +10,16 @@ from src.game.blocks import Path, Wall, Portal
 class App():
     def __init__(self):
         self.field = None
-        self.player = Player()
 
         self.ended = False
         self.is_in_maze = False
-
-        # Testing field for debugging purposes
-        left_top = Path(0, 0)
-        right_top = Portal(1, 0)
-        left_bottom = Path(0, 1)
-        right_bottom = Path(1, 1)
-        blocks = [[left_top, right_top], [left_bottom, right_bottom]]
-        self.field = Field(blocks, left_top)
-        self.field.enter(self.player)
 
     def end(self):
         self.ended = True
 
     def start(self):
         menu = Menu([
-            Option("1", "Read and load maze from file", lambda: None),
+            Option("1", "Read and load maze from file", self.load_maze),
             Option("2", "View maze", self.view_maze),
             Option("3", "Play maze game", self.play_maze),
             Option("4", "Configure current maze", lambda: None),
@@ -49,6 +40,13 @@ class App():
         self.is_in_maze = False
 
     def play_maze(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        if self.field == None:
+            print("There is no maze currently loaded.")
+            input("Press Enter to continue...")
+            return
+
         self.player = Player()
         self.field.enter(self.player)
         self.is_in_maze = True
@@ -89,5 +87,49 @@ class App():
 
     def view_maze(self):
         os.system('cls' if os.name == 'nt' else 'clear')
+
+        if self.field == None:
+            print("There is no maze currently loaded.")
+            input("Press Enter to continue...")
+            return
+
+        self.player = Player()
+        self.field.enter(self.player)
         print(self.field.render())
         input("Press Enter to continue...")
+
+    def load_maze(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        file_name = input("Enter file name (without extension): ")
+
+        try:
+            csv_file = open(f'{file_name}.csv')
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_data = list(csv_reader)
+            blocks = [[] for _ in range(sum(1 for row in csv_data))]
+            start_block = None
+
+            csv_file.close()
+
+            for i, row in enumerate(csv_data):
+                for ii, col in enumerate(row):
+                    block = (
+                        Wall(ii, i) if col == 'X' else
+                        Portal(ii, i) if col == 'B' else
+                        Path(ii, i)
+                    )
+                    blocks[i].append(block)
+                    if col == 'A':
+                        start_block = block
+            print(f'Processed {len(blocks)} lines.')
+
+            self.field = Field(blocks, start_block)
+            self.player = Player()
+            self.field.enter(self.player)
+            print("\n" + self.field.render() + '\n')
+
+            print("Successfully loaded maze!")
+            time.sleep(3)
+        except IOError:
+            print("File does not exist.")
+            input("Press Enter to continue...")
