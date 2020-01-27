@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+import csv
 from src.menu import Menu, Option
 from src.game import Player, Field, Direction
 from src.game.blocks import Path, Wall, Portal
@@ -28,7 +29,7 @@ class App():
 
     def start(self):
         menu = Menu([
-            Option("1", "Read and load maze from file", lambda: None),
+            Option("1", "Read and load maze from file", self.load_maze),
             Option("2", "View maze", self.view_maze),
             Option("3", "Play maze game", self.play_maze),
             Option("4", "Configure current maze", lambda: None),
@@ -91,3 +92,33 @@ class App():
         os.system('cls' if os.name == 'nt' else 'clear')
         print(self.field.render())
         input("Press Enter to continue...")
+
+    def load_maze(self):
+        field = []
+        row_count = 0
+        name = input("Enter file name (without extension): ")
+        player_position = None
+        with open(f'{name}.csv') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',', )
+            for row in csv_reader:
+                blocks = []
+                column_count = 0
+                for block in row:
+                    if (block == 'X'):
+                        blocks.append(Wall(column_count, row_count))
+                    elif (block == 'O'):
+                        blocks.append(Path(column_count, row_count))
+                    elif (block == 'A'):
+                        blocks.append(Path(column_count, row_count))
+                        player_position = Path(column_count, row_count)
+                    elif (block == 'B'):
+                        blocks.append(Portal(column_count, row_count))
+                    column_count+= 1
+                
+                field.append(blocks)
+                row_count += 1
+            print(f'Processed {row_count} lines.')
+        self.field = Field(field, player_position)
+        self.field.enter(self.player)
+        print("Successfully loaded!")
+        time.sleep(3)

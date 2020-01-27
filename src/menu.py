@@ -13,7 +13,6 @@ class Menu():
             return True
         return False
 
-
 class Option():
     def __init__(self, option, text, action):
         self.option = option
