@@ -106,11 +106,12 @@ class App():
                 for block in row:
                     if (block == 'X'):
                         blocks.append(Wall(column_count, row_count))
-                    elif (block == 'O'):
-                        blocks.append(Path(column_count, row_count))
-                    elif (block == 'A'):
-                        blocks.append(Path(column_count, row_count))
-                        player_position = Path(column_count, row_count)
+                    elif (block == 'O' or block == 'A'):
+                        if (block == 'A'):
+                            player_position = Path(column_count, row_count)
+                            blocks.append(player_position)
+                        else:
+                            blocks.append(Path(column_count, row_count))
                     elif (block == 'B'):
                         blocks.append(Portal(column_count, row_count))
                     column_count+= 1
@@ -119,6 +120,7 @@ class App():
                 row_count += 1
             print(f'Processed {row_count} lines.')
         self.field = Field(field, player_position)
-        self.field.enter(self.player)
+        self.field.enter(Player())
+        print("\n" + self.field.render() + '\n')
         print("Successfully loaded!")
         time.sleep(3)
