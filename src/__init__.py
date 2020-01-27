@@ -94,7 +94,7 @@ class App():
             return
 
         self.player = Player()
-        self.field.enter(player)
+        self.field.enter(self.player)
         print(self.field.render())
         input("Press Enter to continue...")
 
