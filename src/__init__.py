@@ -10,19 +10,9 @@ from src.game.blocks import Path, Wall, Portal
 class App():
     def __init__(self):
         self.field = None
-        self.player = Player()
 
         self.ended = False
         self.is_in_maze = False
-
-        # Testing field for debugging purposes
-        left_top = Path(0, 0)
-        right_top = Portal(1, 0)
-        left_bottom = Path(0, 1)
-        right_bottom = Path(1, 1)
-        blocks = [[left_top, right_top], [left_bottom, right_bottom]]
-        self.field = Field(blocks, left_top)
-        self.field.enter(self.player)
 
     def end(self):
         self.ended = True
@@ -50,6 +40,13 @@ class App():
         self.is_in_maze = False
 
     def play_maze(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        if self.field == None:
+            print("There is no maze currently loaded.")
+            input("Press Enter to continue...")
+            return
+
         self.player = Player()
         self.field.enter(self.player)
         self.is_in_maze = True
@@ -90,6 +87,14 @@ class App():
 
     def view_maze(self):
         os.system('cls' if os.name == 'nt' else 'clear')
+
+        if self.field == None:
+            print("There is no maze currently loaded.")
+            input("Press Enter to continue...")
+            return
+
+        self.player = Player()
+        self.field.enter(player)
         print(self.field.render())
         input("Press Enter to continue...")
 
@@ -120,7 +125,6 @@ class App():
                 row_count += 1
             print(f'Processed {row_count} lines.')
         self.field = Field(field, player_position)
-        self.field.enter(Player())
         print("\n" + self.field.render() + '\n')
         print("Successfully loaded!")
         time.sleep(3)
