@@ -99,32 +99,37 @@ class App():
         input("Press Enter to continue...")
 
     def load_maze(self):
-        field = []
-        row_count = 0
-        name = input("Enter file name (without extension): ")
-        player_position = None
-        with open(f'{name}.csv') as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',', )
-            for row in csv_reader:
-                blocks = []
-                column_count = 0
-                for block in row:
-                    if (block == 'X'):
-                        blocks.append(Wall(column_count, row_count))
-                    elif (block == 'O' or block == 'A'):
-                        if (block == 'A'):
-                            player_position = Path(column_count, row_count)
-                            blocks.append(player_position)
-                        else:
-                            blocks.append(Path(column_count, row_count))
-                    elif (block == 'B'):
-                        blocks.append(Portal(column_count, row_count))
-                    column_count+= 1
-                
-                field.append(blocks)
-                row_count += 1
-            print(f'Processed {row_count} lines.')
-        self.field = Field(field, player_position)
-        print("\n" + self.field.render() + '\n')
-        print("Successfully loaded!")
-        time.sleep(3)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        file_name = input("Enter file name (without extension): ")
+
+        try:
+            csv_file = open(f'{file_name}.csv')
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            csv_data = list(csv_reader)
+            blocks = [[] for _ in range(sum(1 for row in csv_data))]
+            start_block = None
+
+            csv_file.close()
+
+            for i, row in enumerate(csv_data):
+                for ii, col in enumerate(row):
+                    block = (
+                        Wall(ii, i) if col == 'X' else
+                        Portal(ii, i) if col == 'B' else
+                        Path(ii, i)
+                    )
+                    blocks[i].append(block)
+                    if col == 'A':
+                        start_block = block
+            print(f'Processed {len(blocks)} lines.')
+
+            self.field = Field(blocks, start_block)
+            self.player = Player()
+            self.field.enter(self.player)
+            print("\n" + self.field.render() + '\n')
+
+            print("Successfully loaded maze!")
+            time.sleep(3)
+        except IOError:
+            print("File does not exist.")
+            input("Press Enter to continue...")
