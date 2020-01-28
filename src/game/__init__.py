@@ -39,6 +39,8 @@ class Field():
 
         if not target_block.is_wall():
             target_block.step(player)
+            return True
+        return False
 
     def render(self):
         render = [', '.join([block.render() for block in row])

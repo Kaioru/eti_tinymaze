@@ -64,15 +64,16 @@ class App():
             print("Location of End (B) = {0}".format(
                 ', '.join([f"(row {block.y}, col {block.x})" for block in ends])))
 
+            def move(player, direction):
+                if not self.field.move(player, direction):
+                    print("Invalid movement entered in game. Please try again")
+                    time.sleep(1)
+
             menu = Menu([
-                Option("w", "Move up", lambda: self.field.move(
-                    self.player, Direction.up)),
-                Option("a", "Move left", lambda: self.field.move(
-                    self.player, Direction.left)),
-                Option("s", "Move down", lambda: self.field.move(
-                    self.player, Direction.down)),
-                Option("d", "Move right", lambda: self.field.move(
-                    self.player, Direction.right)),
+                Option("w", "Move up", lambda: move(self.player, Direction.up)),
+                Option("a", "Move left", lambda: move(self.player, Direction.left)),
+                Option("s", "Move down", lambda: move(self.player, Direction.down)),
+                Option("d", "Move right", lambda: move(self.player, Direction.right)),
                 Option("m", "Return to menu", lambda: self.end_play_maze()),
             ])
             selection = input(
