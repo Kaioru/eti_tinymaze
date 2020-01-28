@@ -109,7 +109,7 @@ class App():
             csv_data = list(csv_reader)
             blocks = [[] for _ in range(sum(1 for row in csv_data))]
             start_block = None
-
+            is_invalid = False
             csv_file.close()
 
             for i, row in enumerate(csv_data):
@@ -117,20 +117,31 @@ class App():
                     block = (
                         Wall(ii, i) if col == 'X' else
                         Portal(ii, i) if col == 'B' else
-                        Path(ii, i)
+                        Path(ii, i) if col == 'A' or col == 'O' else
+                        True
                     )
                     blocks[i].append(block)
                     if col == 'A':
                         start_block = block
-            print(f'Processed {len(blocks)} lines.')
 
-            self.field = Field(blocks, start_block)
-            self.player = Player()
-            self.field.enter(self.player)
-            print("\n" + self.field.render() + '\n')
+                    if block == True:
+                        is_invalid = True
+                        break
 
-            print("Successfully loaded maze!")
-            time.sleep(3)
+            if is_invalid:
+                print("\nInvalid file type/content, please ensure that the file is proper.")
+                time.sleep(3)
+
+            else:
+                print(f'Processed {len(blocks)} lines.')
+
+                self.field = Field(blocks, start_block)
+                self.player = Player()
+                self.field.enter(self.player)
+                print("\n" + self.field.render() + '\n')
+
+                print("Successfully loaded maze!")
+                time.sleep(3)
         except IOError:
             print("File does not exist.")
             input("Press Enter to continue...")
