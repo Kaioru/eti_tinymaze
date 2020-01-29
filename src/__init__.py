@@ -22,7 +22,7 @@ class App():
             Option("1", "Read and load maze from file", self.load_maze),
             Option("2", "View maze", self.view_maze),
             Option("3", "Play maze game", self.play_maze),
-            Option("4", "Configure current maze", lambda: None),
+            Option("4", "Configure current maze", self.edit_maze),
             Option("0", "Exit maze", self.end),
         ])
 
@@ -145,3 +145,40 @@ class App():
         except IOError:
             print("File does not exist.")
             input("Press Enter to continue...")
+
+    def edit_maze(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
+        if self.field == None:
+            print("There is no maze currently loaded.")
+            input("Press Enter to continue...")
+            return
+        Editor(self.field).start()
+        
+class Editor():
+    def __init__(self, field):
+        self.field = field
+        self.ended = False
+
+    def end(self):
+        self.ended = True
+
+    def start(self):
+        while not self.ended:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            self.field.enter(Player())
+            print(self.field.render())
+            print()
+            print("Configuration Menu")
+            print("==================")
+
+            menu = Menu([
+                Option("1", "Create wall", lambda: None),
+                Option("2", "Create passageway", lambda: None),
+                Option("3", "Create start point", lambda: None),
+                Option("4", "Create end point", lambda: None),
+                Option("0", "Exit to Main Menu", self.end()),
+            ])
+            print(menu.render())
+            selection = input("Enter your option: ")
+            menu.select(selection)
