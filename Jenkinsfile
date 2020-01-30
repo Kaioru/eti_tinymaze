@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'python -m compileall'
+                sh 'python -m compileall .'
             }
         }
 
