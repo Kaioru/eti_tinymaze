@@ -182,7 +182,7 @@ class Editor():
                 Option("1", "Create wall", lambda: None),
                 Option("2", "Create passageway", lambda: None),
                 Option("3", "Create start point", self.create_start_point),
-                Option("4", "Create end point", lambda: None),
+                Option("4", "Create end point", self.create_end_point),
                 Option("0", "Exit to Main Menu", lambda: self.end()),
             ])
             print(menu.render())
@@ -220,6 +220,55 @@ class Editor():
                 print(self.field.render())
                 print()
                 print(f"A Start Point block placed at {row}, {col}")
+                input("Press Enter to continue...")
+            except:
+                print("Invalid block coordinates!")
+                input("Press Enter to continue...")
+        elif selection == 'm':
+            self.end()
+    
+    def create_end_point(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        player = Player()
+        self.field.enter(player)
+        print(self.field.render())
+        print()
+
+        selection = input(
+            "Enter the coordinate of the item (e.g row, col)\n'B' to return to configure menu.\n'M' to return to main menu. ").lower()
+
+        if not (selection == 'm' or selection == 'b'):
+            try:
+                split = selection.split(',')
+                row = int(split[0])
+                col = int(split[1])
+
+                block = self.field.blocks[row - 1][col - 1]
+
+                if not isinstance(block, Path):
+                    print(f"Cannot place an end point on non-passageways!")
+                    input("Press Enter to continue...")
+                    return
+
+                if block == self.field.start_block:
+                    print(f"Cannot place an end point on the start block!")
+                    input("Press Enter to continue...")
+                    return
+                
+                blocks = [block for row in self.field.blocks for block in row]
+                portals = [block for block in blocks if isinstance(block, Portal)]
+                
+                for portal in portals:
+                    self.field.blocks[portal.y][portal.x] = Path(portal.x, portal.y)
+
+                self.field.blocks[row - 1][col - 1] = Portal(row - 1, col - 1)
+                self.field.enter(player)
+
+                os.system('cls' if os.name == 'nt' else 'clear')
+                self.field.enter(Player())
+                print(self.field.render())
+                print()
+                print(f"End Point block placed at {row}, {col}")
                 input("Press Enter to continue...")
             except:
                 print("Invalid block coordinates!")
