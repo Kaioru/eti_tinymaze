@@ -208,7 +208,7 @@ class Editor():
                 block = self.field.blocks[row - 1][col - 1]
 
                 if not isinstance(block, Path):
-                    print(f"Cannot place a path on non-passageways!")
+                    print(f"Cannot place a start point on non-passageways!")
                     input("Press Enter to continue...")
                     return
                 
