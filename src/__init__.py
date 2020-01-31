@@ -70,10 +70,14 @@ class App():
                     time.sleep(1)
 
             menu = Menu([
-                Option("w", "Move up", lambda: move(self.player, Direction.up)),
-                Option("a", "Move left", lambda: move(self.player, Direction.left)),
-                Option("s", "Move down", lambda: move(self.player, Direction.down)),
-                Option("d", "Move right", lambda: move(self.player, Direction.right)),
+                Option("w", "Move up", lambda: move(
+                    self.player, Direction.up)),
+                Option("a", "Move left", lambda: move(
+                    self.player, Direction.left)),
+                Option("s", "Move down", lambda: move(
+                    self.player, Direction.down)),
+                Option("d", "Move right", lambda: move(
+                    self.player, Direction.right)),
                 Option("m", "Return to menu", lambda: self.end_play_maze()),
             ])
             selection = input(
@@ -129,7 +133,8 @@ class App():
                         break
 
             if is_invalid:
-                print("\nInvalid file type/content, please ensure that the file is proper.")
+                print(
+                    "\nInvalid file type/content, please ensure that the file is proper.")
                 time.sleep(3)
 
             else:
@@ -154,7 +159,8 @@ class App():
             input("Press Enter to continue...")
             return
         Editor(self.field).start()
-        
+
+
 class Editor():
     def __init__(self, field):
         self.field = field
@@ -175,10 +181,48 @@ class Editor():
             menu = Menu([
                 Option("1", "Create wall", lambda: None),
                 Option("2", "Create passageway", lambda: None),
-                Option("3", "Create start point", lambda: None),
+                Option("3", "Create start point", self.create_start_point),
                 Option("4", "Create end point", lambda: None),
-                Option("0", "Exit to Main Menu", self.end()),
+                Option("0", "Exit to Main Menu", lambda: self.end()),
             ])
             print(menu.render())
             selection = input("Enter your option: ")
             menu.select(selection)
+
+    def create_start_point(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        player = Player()
+        self.field.enter(player)
+        print(self.field.render())
+        print()
+
+        selection = input(
+            "Enter the coordinate of the item (e.g row, col)\n'B' to return to configure menu.\n'M' to return to main menu. ").lower()
+
+        if not (selection == 'm' or selection == 'b'):
+            try:
+                split = selection.split(',')
+                row = int(split[0])
+                col = int(split[1])
+
+                block = self.field.blocks[row - 1][col - 1]
+
+                if not isinstance(block, Path):
+                    print(f"Cannot place a path on non-passageways!")
+                    input("Press Enter to continue...")
+                    return
+                
+                self.field.start_block = block
+                self.field.enter(player)
+                
+                os.system('cls' if os.name == 'nt' else 'clear')
+                self.field.enter(Player())
+                print(self.field.render())
+                print()
+                print(f"A Start Point block placed at {row}, {col}")
+                input("Press Enter to continue...")
+            except:
+                print("Invalid block coordinates!")
+                input("Press Enter to continue...")
+        elif selection == 'm':
+            self.end()
