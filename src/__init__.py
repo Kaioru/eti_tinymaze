@@ -133,7 +133,8 @@ class App():
                         break
 
             if is_invalid:
-                print("Invalid file type/content, please ensure that the file is proper.")
+                print(
+                    "Invalid file type/content, please ensure that the file is proper.")
                 input("Press Enter to continue...")
 
             else:
@@ -178,7 +179,7 @@ class Editor():
             print("==================")
 
             menu = Menu([
-                Option("1", "Create wall", lambda: None),
+                Option("1", "Create wall", self.create_wall),
                 Option("2", "Create passageway", self.create_passageway),
                 Option("3", "Create start point", self.create_start_point),
                 Option("4", "Create end point", self.create_end_point),
@@ -210,10 +211,10 @@ class Editor():
                     print(f"Cannot place a start point on non-passageways!")
                     input("Press Enter to continue...")
                     return
-                
+
                 self.field.start_block = block
                 self.field.enter(player)
-                
+
                 os.system('cls' if os.name == 'nt' else 'clear')
                 self.field.enter(Player())
                 print(self.field.render())
@@ -225,7 +226,7 @@ class Editor():
                 input("Press Enter to continue...")
         elif selection == 'm':
             self.end()
-    
+
     def create_end_point(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         player = Player()
@@ -253,12 +254,14 @@ class Editor():
                     print(f"Cannot place an end point on the start block!")
                     input("Press Enter to continue...")
                     return
-                
+
                 blocks = [block for row in self.field.blocks for block in row]
-                portals = [block for block in blocks if isinstance(block, Portal)]
-                
+                portals = [
+                    block for block in blocks if isinstance(block, Portal)]
+
                 for portal in portals:
-                    self.field.blocks[portal.y][portal.x] = Path(portal.x, portal.y)
+                    self.field.blocks[portal.y][portal.x] = Path(
+                        portal.x, portal.y)
 
                 self.field.blocks[row - 1][col - 1] = Portal(col - 1, row - 1)
                 self.field.enter(player)
@@ -274,7 +277,7 @@ class Editor():
                 input("Press Enter to continue...")
         elif selection == 'm':
             self.end()
-            
+
     def create_passageway(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         player = Player()
@@ -297,9 +300,7 @@ class Editor():
                     print(f"Path can only be placed over walls")
                     input("Press Enter to continue...")
                     return
-                
-                blocks = [block for row in self.field.blocks for block in row]
-                
+
                 self.field.blocks[row - 1][col - 1] = Path(col - 1, row - 1)
                 self.field.enter(player)
 
@@ -308,6 +309,44 @@ class Editor():
                 print(self.field.render())
                 print()
                 print(f"Path block placed at {row}, {col}")
+                input("Press Enter to continue...")
+            except:
+                print("Invalid block coordinates!")
+                input("Press Enter to continue...")
+        elif selection == 'm':
+            self.end()
+
+    def create_wall(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        player = Player()
+        self.field.enter(player)
+        print(self.field.render())
+        print()
+
+        selection = input(
+            "Enter the coordinate of the item (e.g row, col)\n'B' to return to configure menu.\n'M' to return to main menu. ").lower()
+
+        if not (selection == 'm' or selection == 'b'):
+            try:
+                split = selection.split(',')
+                row = int(split[0])
+                col = int(split[1])
+
+                block = self.field.blocks[row - 1][col - 1]
+
+                if not isinstance(block, Path):
+                    print(f"Walls can only be placed over paths")
+                    input("Press Enter to continue...")
+                    return
+
+                self.field.blocks[row - 1][col - 1] = Wall(col - 1, row - 1)
+                self.field.enter(player)
+
+                os.system('cls' if os.name == 'nt' else 'clear')
+                self.field.enter(Player())
+                print(self.field.render())
+                print()
+                print(f"Wall block placed at {row}, {col}")
                 input("Press Enter to continue...")
             except:
                 print("Invalid block coordinates!")
