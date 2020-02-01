@@ -178,7 +178,7 @@ class Editor():
             print("==================")
 
             menu = Menu([
-                Option("1", "Create wall", lambda: None),
+                Option("1", "Create wall", self.create_wall),
                 Option("2", "Create passageway", lambda: None),
                 Option("3", "Create start point", self.create_start_point),
                 Option("4", "Create end point", self.create_end_point),
@@ -268,6 +268,46 @@ class Editor():
                 print(self.field.render())
                 print()
                 print(f"End Point block placed at {row}, {col}")
+                input("Press Enter to continue...")
+            except:
+                print("Invalid block coordinates!")
+                input("Press Enter to continue...")
+        elif selection == 'm':
+            self.end()
+
+    def create_wall(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        player = Player()
+        self.field.enter(player)
+        print(self.field.render())
+        print()
+
+        selection = input(
+            "Enter the coordinate of the item (e.g row, col)\n'B' to return to configure menu.\n'M' to return to main menu. ").lower()
+
+        if not (selection == 'm' or selection == 'b'):
+            try:
+                split = selection.split(',')
+                row = int(split[0])
+                col = int(split[1])
+
+                block = self.field.blocks[row - 1][col - 1]
+
+                if not isinstance(block, Path):
+                    print(f"Walls can only be placed over paths")
+                    input("Press Enter to continue...")
+                    return
+                
+                blocks = [block for row in self.field.blocks for block in row]
+                
+                self.field.blocks[row - 1][col - 1] = Wall(col - 1, row - 1)
+                self.field.enter(player)
+
+                os.system('cls' if os.name == 'nt' else 'clear')
+                self.field.enter(Player())
+                print(self.field.render())
+                print()
+                print(f"Wall block placed at {row}, {col}")
                 input("Press Enter to continue...")
             except:
                 print("Invalid block coordinates!")
