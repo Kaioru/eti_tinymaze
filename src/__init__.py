@@ -33,7 +33,7 @@ class App():
             print(menu.render())
             if not menu.select(input("Enter your option: ")):
                 print("Invalid menu option, try again!")
-                time.sleep(3)
+                input("Press Enter to continue...")
             print()
 
     def end_play_maze(self):
@@ -87,7 +87,7 @@ class App():
             if self.player.is_finished:
                 print()
                 print("You have completed the maze, congratulations!")
-                time.sleep(3)
+                input("Press Enter to continue...")
                 self.end_play_maze()
 
     def view_maze(self):
@@ -133,9 +133,8 @@ class App():
                         break
 
             if is_invalid:
-                print(
-                    "\nInvalid file type/content, please ensure that the file is proper.")
-                time.sleep(3)
+                print("Invalid file type/content, please ensure that the file is proper.")
+                input("Press Enter to continue...")
 
             else:
                 print(f'Processed {len(blocks)} lines.')
@@ -146,7 +145,7 @@ class App():
                 print("\n" + self.field.render() + '\n')
 
                 print("Successfully loaded maze!")
-                time.sleep(3)
+                input("Press Enter to continue...")
         except IOError:
             print("File does not exist.")
             input("Press Enter to continue...")
