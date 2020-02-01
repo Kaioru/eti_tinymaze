@@ -60,9 +60,9 @@ class App():
             blocks = [block for row in self.field.blocks for block in row]
             ends = [block for block in blocks if isinstance(block, Portal)]
             print("Location of start (A) = {0}".format(
-                f"(row {start.y}, col {start.x})"))
+                f"(row {start.y + 1}, col {start.x + 1})"))
             print("Location of End (B) = {0}".format(
-                ', '.join([f"(row {block.y}, col {block.x})" for block in ends])))
+                ', '.join([f"(row {block.y + 1}, col {block.x + 1})" for block in ends])))
 
             def move(player, direction):
                 if not self.field.move(player, direction):
@@ -261,7 +261,7 @@ class Editor():
                 for portal in portals:
                     self.field.blocks[portal.y][portal.x] = Path(portal.x, portal.y)
 
-                self.field.blocks[row - 1][col - 1] = Portal(row - 1, col - 1)
+                self.field.blocks[row - 1][col - 1] = Portal(col - 1, row - 1)
                 self.field.enter(player)
 
                 os.system('cls' if os.name == 'nt' else 'clear')
